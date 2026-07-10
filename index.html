@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productivity Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</head>
+
+<body id="appBody">
+
+  <div id="dynamicBackground" class="dynamic-bg"></div>
+
+  <video id="bgVideo" class="bg-video" autoplay loop muted playsinline>
+    <source src="assets/light mode.mp4" type="video/mp4">
+  </video>
+  <video id="bgVideoDark" class="bg-video-dark" autoplay loop muted playsinline>
+    <source src="assets/dark mode.mp4" type="video/mp4">
+  </video>
+
+  <div class="app-container">
+
+    <aside id="sidebar" class="sidebar">
+      <video id="sidebarBgVideo" class="sidebar-bg-video" autoplay loop muted playsinline>
+        <source src="assets/sidebar light.mp4" type="video/mp4">
+      </video>
+      <video id="sidebarBgVideoDark" class="sidebar-bg-video-dark" autoplay loop muted playsinline>
+        <source src="assets/sidebar dark.mp4" type="video/mp4">
+      </video>
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <i data-lucide="gauge"></i>
+          </div>
+          <span class="brand-name">Productivity Dashboard</span>
+        </div>
+
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-group">
+          <span class="sidebar-group-title">Overview</span>
+          <button class="nav-item active" data-target="dashboard">
+            <i data-lucide="layout-grid"></i>
+            <span>Dashboard</span>
+          </button>
+        </div>
+
+        <div class="sidebar-group">
+          <span class="sidebar-group-title">Core Tools</span>
+          <button class="nav-item" data-target="todoSection">
+            <i data-lucide="list-todo"></i>
+            <span>Todo List</span>
+            <span class="nav-badge" id="todoSidebarBadge" style="display: none;">0</span>
+          </button>
+          <button class="nav-item" data-target="plannerSection">
+            <i data-lucide="calendar"></i>
+            <span>Daily Planner</span>
+            <span class="nav-badge" id="plannerSidebarBadge" style="display: none;">0</span>
+          </button>
+          <button class="nav-item" data-target="goalsSection">
+            <i data-lucide="target"></i>
+            <span>Daily Goals</span>
+            <span class="nav-badge" id="goalsSidebarBadge" style="display: none;">0%</span>
+          </button>
+          <button class="nav-item" data-target="pomodoroSection">
+            <i data-lucide="timer"></i>
+            <span>Pomodoro Timer</span>
+            <span class="nav-badge pulse-badge" id="pomodoroSidebarBadge" style="display: none;">Focus</span>
+          </button>
+          <button class="nav-item" data-target="quoteSection">
+            <i data-lucide="sparkles"></i>
+            <span>Motivation</span>
+          </button>
+        </div>
+      </nav>
+
+
+    </aside>
+
+    <div class="main-content">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="sidebarToggle" class="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumbs" id="breadcrumbs">
+            <span class="breadcrumb-item">Pages</span>
+            <i data-lucide="chevron-right" class="breadcrumb-sep"></i>
+            <span class="breadcrumb-item active">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+            <i data-lucide="moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <main id="dashboardView" class="dashboard-view">
+
+          <div class="dashboard-hero">
+            <div class="hero-greeting">
+              <div class="analog-clock" id="analogClock" aria-label="Analog Clock">
+                <div class="clock-face">
+                  <div class="clock-ticks">
+                    <span class="tick tick-12"></span>
+                    <span class="tick tick-3"></span>
+                    <span class="tick tick-6"></span>
+                    <span class="tick tick-9"></span>
+                  </div>
+                  <div class="clock-hand hour-hand" id="hourHand"></div>
+                  <div class="clock-hand minute-hand" id="minuteHand"></div>
+                  <div class="clock-hand second-hand" id="secondHand"></div>
+                  <div class="clock-center"></div>
+                </div>
+              </div>
+
+              <div id="dateTimeWidget" class="datetime-display">
+                <span id="timeDisplay">--:--:--</span>
+                <span class="dot-separator">•</span>
+                <span id="dateDisplay">Loading date...</span>
+              </div>
+            </div>
+
+            <section id="weatherWidget" class="weather-widget">
+              <div class="weather-main">
+                <div class="weather-icon-wrapper">
+                  <i id="weatherIcon" class="weather-icon" data-lucide="cloud-sun"></i>
+                </div>
+                <div>
+                  <div id="weatherTemp" class="weather-temp">--°C</div>
+                  <div id="weatherCondition" class="weather-condition">Loading weather...</div>
+                </div>
+              </div>
+              <div class="weather-details">
+                <div class="detail-item"><i data-lucide="map-pin"></i> <span id="weatherLocation">Locating...</span>
+                </div>
+                <div class="detail-item"><i data-lucide="wind"></i> <span id="weatherWind">-- km/h</span></div>
+              </div>
+            </section>
+          </div>
+
+          <h2 class="dashboard-title">Your Workspace Tools</h2>
+
+          <div class="card-grid">
+            <div class="feature-card" data-target="todoSection">
+              <div class="card-icon-container bg-primary-soft">
+                <i data-lucide="list-todo" class="card-icon text-primary"></i>
+              </div>
+              <div class="card-header-row">
+                <h3>Todo List</h3>
+                <span class="card-badge badge-primary" id="todoBadge">0 tasks</span>
+              </div>
+              <p>Organize, schedule, and complete your tasks</p>
+            </div>
+
+            <div class="feature-card" data-target="plannerSection">
+              <div class="card-icon-container bg-secondary-soft">
+                <i data-lucide="calendar" class="card-icon text-secondary"></i>
+              </div>
+              <div class="card-header-row">
+                <h3>Daily Planner</h3>
+                <span class="card-badge badge-secondary" id="plannerBadge">0 plans</span>
+              </div>
+              <p>Schedule your day hour by hour in detail</p>
+            </div>
+
+            <div class="feature-card" data-target="goalsSection">
+              <div class="card-icon-container bg-success-soft">
+                <i data-lucide="target" class="card-icon text-success"></i>
+              </div>
+              <div class="card-header-row">
+                <h3>Daily Goals</h3>
+                <span class="card-badge badge-success" id="goalsBadge">0% done</span>
+              </div>
+              <p>Define targets and follow visual progress</p>
+            </div>
+
+            <div class="feature-card" data-target="pomodoroSection">
+              <div class="card-icon-container bg-accent-soft">
+                <i data-lucide="timer" class="card-icon text-accent"></i>
+              </div>
+              <div class="card-header-row">
+                <h3>Pomodoro Timer</h3>
+                <span class="card-badge badge-accent" id="pomodoroBadge">Idle</span>
+              </div>
+              <p>Execute sprints of deep work with alerts</p>
+            </div>
+
+            <div class="feature-card" data-target="quoteSection">
+              <div class="card-icon-container bg-info-soft">
+                <i data-lucide="sparkles" class="card-icon text-info"></i>
+              </div>
+              <div class="card-header-row">
+                <h3>Motivation</h3>
+                <span class="card-badge badge-info" id="motivationBadge">Inspired</span>
+              </div>
+              <p>Access handpicked motivating quotes</p>
+            </div>
+          </div>
+        </main>
+
+        <section id="todoSection" class="feature-view">
+          <div class="feature-header">
+            <button class="back-btn" data-back><i data-lucide="arrow-left"></i> Back</button>
+            <h2><i data-lucide="list-todo"></i> Todo List</h2>
+          </div>
+
+          <div class="feature-body">
+            <form id="todoForm" class="input-row">
+              <input type="text" id="todoInput" placeholder="Write down a task..." autocomplete="off" required>
+              <button type="submit" class="primary-btn"><i data-lucide="plus"></i> Add Task</button>
+            </form>
+
+            <ul id="todoList" class="item-list"></ul>
+            <div id="todoEmpty" class="empty-state">
+              <div class="empty-icon"><i data-lucide="list-todo"></i></div>
+              <p class="empty-title">All tasks completed!</p>
+              <p class="empty-subtitle">Add a task above to plan your next milestone.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="plannerSection" class="feature-view">
+          <div class="feature-header">
+            <button class="back-btn" data-back><i data-lucide="arrow-left"></i> Back</button>
+            <h2><i data-lucide="calendar"></i> Daily Planner</h2>
+          </div>
+
+          <div class="feature-body">
+            <div id="plannerList" class="planner-list"></div>
+          </div>
+        </section>
+
+        <section id="goalsSection" class="feature-view">
+          <div class="feature-header">
+            <button class="back-btn" data-back><i data-lucide="arrow-left"></i> Back</button>
+            <h2><i data-lucide="target"></i> Daily Goals</h2>
+          </div>
+
+          <div class="feature-body">
+            <div class="progress-wrap">
+              <div class="progress-info-row">
+                <span class="progress-label">Goal Progress</span>
+                <span id="goalsProgressText" class="progress-percentage">0 of 0 completed</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="goalsProgressBar" class="progress-bar-fill"></div>
+              </div>
+            </div>
+
+            <form id="goalForm" class="input-row">
+              <input type="text" id="goalInput" placeholder="What is your goal for today?" autocomplete="off" required>
+              <button type="submit" class="primary-btn"><i data-lucide="plus"></i> Add Goal</button>
+            </form>
+
+            <ul id="goalsList" class="item-list"></ul>
+            <div id="goalsEmpty" class="empty-state">
+              <div class="empty-icon"><i data-lucide="target"></i></div>
+              <p class="empty-title">No goals established</p>
+              <p class="empty-subtitle">Set goals above to outline your focus points for the day.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="pomodoroSection" class="feature-view">
+          <div class="feature-header">
+            <button class="back-btn" data-back><i data-lucide="arrow-left"></i> Back</button>
+            <h2><i data-lucide="timer"></i> Pomodoro Timer</h2>
+          </div>
+
+          <div class="feature-body pomodoro-body">
+            <div id="pomodoroLabel" class="pomodoro-label">Work Session</div>
+            <div id="pomodoroDisplay" class="pomodoro-display">25:00</div>
+
+            <div class="pomodoro-controls">
+              <button id="pomodoroStart" class="primary-btn"><i data-lucide="play"></i> Start</button>
+              <button id="pomodoroPause" class="secondary-btn"><i data-lucide="pause"></i> Pause</button>
+              <button id="pomodoroReset" class="secondary-btn"><i data-lucide="rotate-ccw"></i> Reset</button>
+            </div>
+
+            <div class="pomodoro-modes">
+              <button class="mode-btn active" data-minutes="25">Work (25m)</button>
+              <button class="mode-btn" data-minutes="5">Short Break (5m)</button>
+              <button class="mode-btn" data-minutes="15">Long Break (15m)</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="quoteSection" class="feature-view">
+          <div class="feature-header">
+            <button class="back-btn" data-back><i data-lucide="arrow-left"></i> Back</button>
+            <h2><i data-lucide="sparkles"></i> Motivation</h2>
+          </div>
+
+          <div class="feature-body quote-body">
+            <div id="quoteCard" class="quote-card">
+              <div class="quote-quote-icon"><i data-lucide="quote"></i></div>
+              <p id="quoteText" class="quote-text">Loading an inspiring quote...</p>
+              <p id="quoteAuthor" class="quote-author"></p>
+            </div>
+            <button id="newQuoteBtn" class="primary-btn"><i data-lucide="rotate-cw"></i> New Quote</button>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
